@@ -18,3 +18,37 @@ Buka `index.html` di Chrome/Edge/Firefox. Tes engine: `node tests/engine.test.js
 ## Struktur
 - `src/engine.js` — easing, preset, layout, renderer (murni, bisa dites di Node)
 - `src/app.js` — UI: inspector, timeline, ekspor
+
+---
+
+# Pembuat Video Explainer Otomatis (Windows, gratis)
+
+Dari satu file naskah JSON menjadi video MP4 9:16 (1080x1920) untuk TikTok, Reels, Shorts, dan Facebook:
+narasi suara Indonesia -> gambar AI per adegan -> gerak kamera -> subtitle besar per frasa -> MP4.
+
+## Pasang (sekali saja)
+```
+pip install -r requirements.txt
+```
+ffmpeg ikut terpasang lewat paket `imageio-ffmpeg`, tidak perlu pasang terpisah.
+
+## Pakai
+```
+python buat_video.py naskah\langit_biru.json
+```
+Hasil: `keluaran\kenapa_langit_biru.mp4` dan file `.txt` berisi caption + hashtag.
+
+Opsi: `--draft` (resolusi kecil, cepat untuk cek), `--musik lagu.mp3` (musik latar bebas hak cipta),
+`--offline` (tes tanpa internet, tanpa suara), `--font C:\path\font.ttf`.
+
+## Membuat video baru
+Minta Claude: "buatkan naskah sains tentang <topik>". Simpan hasil JSON-nya di folder `naskah\`, lalu jalankan perintah di atas.
+Tiap adegan: `narasi`, `gambar_prompt` (deskripsi gambar, bahasa Inggris lebih akurat), `kamera`
+(`zoom_in`, `zoom_out`, `pan_kiri`, `pan_kanan`). Mau pakai gambar sendiri: isi `"gambar": "folder\\foto.png"`.
+
+## Yang perlu diketahui
+- Suara memakai edge-tts dan gambar memakai Pollinations: keduanya gratis tapi layanan tidak resmi, bisa lambat atau berubah.
+  Kalau gambar gagal dibuat, program memakai gambar cadangan dan memberi peringatan.
+- Hasil visual adalah ilustrasi AI bergerak (zoom/pan), bukan animasi 3D sungguhan.
+- Cek ulang fakta naskah sebelum upload, aktifkan label konten AI, dan pakai musik berlisensi jelas.
+- Tes: `python tests/test_videogen.py`

@@ -1,0 +1,45 @@
+{
+  "judul": "Kenapa langit biru?",
+  "suara": "id-ID-ArdiNeural",
+  "kecepatan": "+0%",
+  "gaya": "3D animated render, soft cinematic lighting, vibrant colors, vertical composition, no text, no watermark",
+  "caption": "Kenapa langit biru, bukan hijau atau ungu? Jawabannya ada di cahaya matahari!",
+  "hashtag": ["#sains", "#faktaunik", "#edukasi", "#langitbiru", "#belajardiTikTok"],
+  "adegan": [
+    {
+      "narasi": "Pernah nggak sih kamu bertanya, kenapa langit itu biru, bukan hijau atau merah?",
+      "gambar_prompt": "a curious child looking up at a bright blue sky with fluffy white clouds, green field",
+      "kamera": "zoom_in"
+    },
+    {
+      "narasi": "Cahaya matahari kelihatan putih, tapi sebenarnya campuran semua warna pelangi.",
+      "gambar_prompt": "sunlight passing through a glass prism splitting into rainbow colors, dark background",
+      "kamera": "pan_kiri"
+    },
+    {
+      "narasi": "Saat masuk ke atmosfer bumi, cahaya itu menabrak molekul gas yang sangat kecil.",
+      "gambar_prompt": "light rays entering earth atmosphere from space, tiny glowing gas molecules, planet curve",
+      "kamera": "zoom_out"
+    },
+    {
+      "narasi": "Cahaya biru punya gelombang pendek, jadi paling mudah dihamburkan ke segala arah. Ilmuwan menyebutnya hamburan Rayleigh.",
+      "gambar_prompt": "blue light waves scattering in all directions across a sky, glowing blue particles",
+      "kamera": "pan_kanan"
+    },
+    {
+      "narasi": "Lalu kenapa bukan ungu? Karena matahari memancarkan lebih sedikit cahaya ungu, dan mata kita kurang peka terhadapnya.",
+      "gambar_prompt": "a human eye in close-up reflecting a blue sky, soft purple glow around",
+      "kamera": "zoom_in"
+    },
+    {
+      "narasi": "Saat senja, cahaya menempuh jalur atmosfer yang jauh lebih panjang. Biru sudah terhambur, tinggal jingga dan merah.",
+      "gambar_prompt": "beautiful orange and red sunset over the ocean, sun near horizon, long light rays",
+      "kamera": "zoom_out"
+    },
+    {
+      "narasi": "Jadi langit biru itu bukan cat, tapi hasil cahaya yang terhambur. Keren, kan?",
+      "gambar_prompt": "wide cinematic view of blue sky over a green hill, a child smiling with arms open",
+      "kamera": "zoom_in"
+    }
+  ]
+}
