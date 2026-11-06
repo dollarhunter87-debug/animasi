@@ -5,6 +5,7 @@ import io
 import random
 import textwrap
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -29,6 +30,11 @@ def _pollinations(prompt, w, h, seed, retries=3, timeout=120):
                 img = Image.open(io.BytesIO(r.read()))
                 img.load()
                 return img.convert("RGB")
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code == 402:  # kuota gratis habis/dibatasi: mengulang tidak membantu
+                raise RuntimeError("HTTP 402: layanan gambar gratis menolak permintaan (kuota habis/dibatasi)") from e
+            time.sleep(2 * (attempt + 1))
         except Exception as e:  # noqa: BLE001
             last = e
             time.sleep(2 * (attempt + 1))
@@ -64,8 +70,8 @@ def placeholder(label, seed, w, h):
     return img
 
 
-def get_image(scene, idx, style, w, h, cache_dir, base_dir, offline=False, log=print):
-    """Kembalikan PIL.Image RGB untuk satu adegan."""
+def get_image(scene, idx, style, w, h, cache_dir, base_dir, offline=False, log=print, fallback=True):
+    """Kembalikan PIL.Image RGB untuk satu adegan. fallback=False: kembalikan None bila AI gagal (bukan placeholder)."""
     local = scene.get("gambar")
     if local:
         p = Path(local)
@@ -88,6 +94,9 @@ def get_image(scene, idx, style, w, h, cache_dir, base_dir, offline=False, log=p
         img.save(cached, quality=92)
         return img
     except Exception as e:  # noqa: BLE001
+        if not fallback:
+            log(f"  ! adegan {idx + 1}: gagal membuat gambar AI ({e}).")
+            return None
         log(f"  ! adegan {idx + 1}: gagal membuat gambar AI ({e}); pakai gambar cadangan. "
             "Taruh gambar sendiri lewat field 'gambar' di naskah.")
         return placeholder(prompt, seed, w, h)

@@ -53,6 +53,7 @@ def tulis_prompt_klip(data, naskah_path, slug, w, h, start_images, offline):
     folder = Path("klip") / slug
     folder.mkdir(parents=True, exist_ok=True)
     style = data.get("gaya", DEFAULT_STYLE)
+    gagal = []
     lines = [f"DAFTAR KLIP: {data.get('judul', slug)}",
              "Buat satu klip 5 detik, format vertikal 9:16, untuk tiap adegan. Simpan sebagai adegan_N.mp4 "
              f"di folder {folder} lalu isi field \"video\" di naskah.", ""]
@@ -64,10 +65,18 @@ def tulis_prompt_klip(data, naskah_path, slug, w, h, start_images, offline):
                   f"Prompt : {gerak}. {style}",
                   f"Simpan : {folder / f'adegan_{i}.mp4'}", ""]
         if start_images:
-            img = get_image(sc, i - 1, style, w, h, folder, Path(naskah_path).resolve().parent, offline)
-            img.save(folder / f"adegan_{i}.jpg", quality=92)
+            img = get_image(sc, i - 1, style, w, h, folder, Path(naskah_path).resolve().parent,
+                            offline, fallback=False)
+            if img is None:
+                gagal.append(i)
+            else:
+                img.save(folder / f"adegan_{i}.jpg", quality=92)
     out = folder / "daftar_prompt.txt"
     out.write_text("\n".join(lines), encoding="utf-8")
+    if gagal:
+        print(f"\nGambar awal GAGAL dibuat untuk adegan: {gagal}. Itu tidak disimpan (tidak ada gambar palsu).\n"
+              "Pilihan: jalankan lagi nanti, buat gambar awalnya di generator gambar lain, atau pakai prompt "
+              "teks saja di generator video (text-to-video).")
     return out
 
 
