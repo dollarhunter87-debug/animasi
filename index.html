@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Studio</title>
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<header>
+  <strong>Motion Studio</strong>
+  <span class="sub">Kinetic typography 9:16</span>
+  <span class="spacer"></span>
+  <button id="btnLoad">Buka JSON</button>
+  <button id="btnSave">Simpan JSON</button>
+  <button id="btnPng">PNG frame</button>
+  <button id="btnExport" class="primary">Ekspor video</button>
+  <input type="file" id="fileLoad" accept="application/json" hidden>
+</header>
+
+<main>
+  <section class="preview">
+    <div class="stagewrap">
+      <canvas id="stage" width="1080" height="1920"></canvas>
+      <div id="safe" class="safe" hidden></div>
+    </div>
+    <div class="transport">
+      <button id="btnPlay">▶ Putar</button>
+      <button id="btnStop">⏮</button>
+      <span id="time">0.00 / 8.00s</span>
+      <label><input type="checkbox" id="chkSafe"> Safe area TikTok</label>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <h3>Scene</h3>
+    <div id="sceneForm" class="form"></div>
+    <div class="row-actions">
+      <button id="btnAdd">+ Layer teks</button>
+      <button id="btnDup">Duplikat</button>
+      <button id="btnDel">Hapus</button>
+    </div>
+    <h3>Layer terpilih</h3>
+    <div id="layerForm" class="form"></div>
+  </aside>
+</main>
+
+<section class="timeline">
+  <div class="tlscroll"><div id="tl"></div></div>
+</section>
+
+<script src="src/engine.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
