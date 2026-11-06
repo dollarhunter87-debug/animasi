@@ -4,42 +4,55 @@
   "kecepatan": "+0%",
   "gaya": "3D animated render, soft cinematic lighting, vibrant colors, vertical composition, no text, no watermark",
   "caption": "Kenapa langit biru, bukan hijau atau ungu? Jawabannya ada di cahaya matahari!",
-  "hashtag": ["#sains", "#faktaunik", "#edukasi", "#langitbiru", "#belajardiTikTok"],
+  "hashtag": [
+    "#sains",
+    "#faktaunik",
+    "#edukasi",
+    "#langitbiru",
+    "#belajardiTikTok"
+  ],
   "adegan": [
     {
       "narasi": "Pernah nggak sih kamu bertanya, kenapa langit itu biru, bukan hijau atau merah?",
       "gambar_prompt": "a curious child looking up at a bright blue sky with fluffy white clouds, green field",
-      "kamera": "zoom_in"
+      "kamera": "zoom_in",
+      "prompt_gerak": "kamera maju pelan ke arah anak yang menengadah, awan bergerak perlahan"
     },
     {
       "narasi": "Cahaya matahari kelihatan putih, tapi sebenarnya campuran semua warna pelangi.",
       "gambar_prompt": "sunlight passing through a glass prism splitting into rainbow colors, dark background",
-      "kamera": "pan_kiri"
+      "kamera": "pan_kiri",
+      "prompt_gerak": "sinar matahari menembus prisma kaca lalu terpecah jadi pelangi yang menyebar, kamera bergeser ke kiri"
     },
     {
       "narasi": "Saat masuk ke atmosfer bumi, cahaya itu menabrak molekul gas yang sangat kecil.",
       "gambar_prompt": "light rays entering earth atmosphere from space, tiny glowing gas molecules, planet curve",
-      "kamera": "zoom_out"
+      "kamera": "zoom_out",
+      "prompt_gerak": "sinar cahaya masuk ke atmosfer bumi dan menabrak partikel gas yang berkilau, kamera mundur perlahan"
     },
     {
       "narasi": "Cahaya biru punya gelombang pendek, jadi paling mudah dihamburkan ke segala arah. Ilmuwan menyebutnya hamburan Rayleigh.",
       "gambar_prompt": "blue light waves scattering in all directions across a sky, glowing blue particles",
-      "kamera": "pan_kanan"
+      "kamera": "pan_kanan",
+      "prompt_gerak": "partikel cahaya biru memantul dan menyebar ke segala arah di langit, kamera bergeser ke kanan"
     },
     {
       "narasi": "Lalu kenapa bukan ungu? Karena matahari memancarkan lebih sedikit cahaya ungu, dan mata kita kurang peka terhadapnya.",
       "gambar_prompt": "a human eye in close-up reflecting a blue sky, soft purple glow around",
-      "kamera": "zoom_in"
+      "kamera": "zoom_in",
+      "prompt_gerak": "close-up mata manusia memantulkan langit biru, kamera maju pelan, cahaya ungu samar"
     },
     {
       "narasi": "Saat senja, cahaya menempuh jalur atmosfer yang jauh lebih panjang. Biru sudah terhambur, tinggal jingga dan merah.",
       "gambar_prompt": "beautiful orange and red sunset over the ocean, sun near horizon, long light rays",
-      "kamera": "zoom_out"
+      "kamera": "zoom_out",
+      "prompt_gerak": "matahari terbenam di laut, cahaya jingga memanjang, ombak bergerak pelan, kamera mundur"
     },
     {
       "narasi": "Jadi langit biru itu bukan cat, tapi hasil cahaya yang terhambur. Keren, kan?",
       "gambar_prompt": "wide cinematic view of blue sky over a green hill, a child smiling with arms open",
-      "kamera": "zoom_in"
+      "kamera": "zoom_in",
+      "prompt_gerak": "kamera mengangkat ke atas bukit hijau di bawah langit biru, anak tersenyum membuka tangan"
     }
   ]
 }

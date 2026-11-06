@@ -58,6 +58,31 @@ def test_render_offline():
         assert "540x960" in info and "Audio" in info
 
 
+def test_render_dengan_klip():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        clip = tmp / "c.mp4"  # klip 1 dtk, lebih pendek dari narasi -> harus diperlambat/ditahan
+        subprocess.run([ffmpeg_exe(), "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                        "testsrc=size=320x568:rate=15:duration=1", "-pix_fmt", "yuv420p", str(clip)], check=True)
+        naskah = tmp / "t.json"
+        naskah.write_text(json.dumps({
+            "judul": "Klip", "adegan": [
+                {"narasi": "Adegan dengan klip video buatan AI.", "video": "c.mp4"},
+                {"narasi": "Adegan tanpa klip pakai gambar."},
+            ]}), encoding="utf-8")
+        out = tmp / "o.mp4"
+        assert main([str(naskah), "-o", str(out), "--offline", "--draft", "--fps", "10",
+                     "--cache", str(tmp / "cache")]) == 0
+        assert out.exists() and out.stat().st_size > 1000
+        # klip hilang -> pesan jelas, bukan crash tak terduga
+        naskah.write_text(json.dumps({"adegan": [{"narasi": "x", "video": "tidak_ada.mp4"}]}), encoding="utf-8")
+        try:
+            main([str(naskah), "--offline"])
+            raise AssertionError("seharusnya gagal")
+        except SystemExit as e:
+            assert "klip tidak ditemukan" in str(e)
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

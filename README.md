@@ -52,3 +52,24 @@ Tiap adegan: `narasi`, `gambar_prompt` (deskripsi gambar, bahasa Inggris lebih a
 - Hasil visual adalah ilustrasi AI bergerak (zoom/pan), bukan animasi 3D sungguhan.
 - Cek ulang fakta naskah sebelum upload, aktifkan label konten AI, dan pakai musik berlisensi jelas.
 - Tes: `python tests/test_videogen.py`
+
+## Video dengan gerakan sungguhan (klip AI per adegan)
+
+Gambar diam + zoom kurang hidup. Untuk gerakan sungguhan, ubah tiap adegan jadi klip video lewat generator
+video AI online (tidak perlu GPU), lalu pipeline menggabungkannya dengan suara dan subtitle.
+
+1. Buat daftar prompt dan gambar awal tiap adegan:
+   ```
+   py buat_video.py naskah\langit_biru.json --prompt-klip --gambar-awal
+   ```
+   Hasil di `klip\<judul>\`: `daftar_prompt.txt` dan `adegan_1.jpg`, `adegan_2.jpg`, dst.
+2. Di situs/aplikasi generator video AI pilih mode **image-to-video**: unggah `adegan_N.jpg`, tempel prompt dari
+   `daftar_prompt.txt`, pilih rasio 9:16 dan durasi sekitar 5 detik. Unduh hasilnya sebagai `adegan_N.mp4`
+   ke folder yang sama. (Kuota gratis dan ketentuan tiap layanan berbeda; cek langsung di situsnya.)
+3. Di naskah, tambahkan ke tiap adegan: `"video": "..\\klip\\kenapa_langit_biru\\adegan_1.mp4"`
+   (path relatif terhadap folder file naskah). Adegan tanpa field `video` tetap memakai gambar + zoom,
+   jadi boleh dicampur.
+4. Render seperti biasa: `py buat_video.py naskah\langit_biru.json`
+
+Klip yang lebih pendek dari narasi diperlambat (maks 2x) lalu frame terakhirnya ditahan; klip yang lebih
+panjang dipotong. Audio klip dibuang, yang dipakai hanya narasi.

@@ -6,6 +6,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+from .clips import clip_frames
 from .tts import SR
 from .util import ffmpeg_exe, find_font
 
@@ -119,7 +120,7 @@ def _write_audio(narrations, path):
 
 
 def render_video(scenes, narrations, images, out_path, workdir, w=1080, h=1920, fps=30,
-                 font_path=None, music=None, log=print):
+                 font_path=None, music=None, log=print, clips=None):
     """scenes: list dict naskah (field 'kamera'); narrations & images sejajar dengan scenes."""
     out_path, workdir = Path(out_path), Path(workdir)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -147,16 +148,18 @@ def render_video(scenes, narrations, images, out_path, workdir, w=1080, h=1920, 
     prev_last = None
     try:
         for si, (sc, nar, img) in enumerate(zip(scenes, narrations, images)):
-            base = prepare_base(img, w, h)
+            clip = clips[si] if clips else None
+            base = None if clip else prepare_base(img, w, h)
             mode = sc.get("kamera", "zoom_in")
             length = nar.duration + PAD
             n = max(1, round(length * fps))
+            frames = clip_frames(clip, n / fps, w, h, fps) if clip else None
             chunks = make_chunks(nar.words)
             cache = {}
             log(f"  adegan {si + 1}/{len(scenes)}: {length:.1f} dtk, {n} frame")
             for fi in range(n):
                 t = fi / fps
-                frame = camera_frame(base, mode, fi / max(1, n - 1), w, h)
+                frame = next(frames) if frames else camera_frame(base, mode, fi / max(1, n - 1), w, h)
                 frame.paste(black, (0, 0), shade)
 
                 for ci, ch in enumerate(chunks):
@@ -180,6 +183,8 @@ def render_video(scenes, narrations, images, out_path, workdir, w=1080, h=1920, 
                     frame = Image.blend(src, frame, (fi + 1) / (FADE_FRAMES + 1))
                 proc.stdin.write(frame.tobytes())
             prev_last = frame
+            if frames:
+                frames.close()
     finally:
         proc.stdin.close()
         code = proc.wait()
