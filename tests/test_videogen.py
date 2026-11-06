@@ -83,6 +83,29 @@ def test_render_dengan_klip():
             assert "klip tidak ditemukan" in str(e)
 
 
+def test_klip_otomatis():
+    from buat_video import klip_otomatis
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        assert klip_otomatis(tmp, 1) is None
+        (tmp / "adegan_2.mov").write_bytes(b"x")
+        assert klip_otomatis(tmp, 2).name == "adegan_2.mov" and klip_otomatis(tmp, 1) is None
+        # end-to-end: klip di folder dipakai tanpa field 'video'
+        subprocess.run([ffmpeg_exe(), "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                        "testsrc=size=320x568:rate=15:duration=1", "-pix_fmt", "yuv420p",
+                        str(tmp / "adegan_1.mp4")], check=True)
+        naskah = tmp / "t.json"
+        naskah.write_text(json.dumps({"judul": "Auto", "adegan": [{"narasi": "Satu dua tiga empat."}]}),
+                          encoding="utf-8")
+        import io
+        from contextlib import redirect_stdout
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            rc = main([str(naskah), "-o", str(tmp / "o.mp4"), "--offline", "--draft", "--fps", "10",
+                       "--cache", str(tmp / "cache"), "--klip-dir", str(tmp)])
+        assert rc == 0 and "KLIP VIDEO adegan_1.mp4" in buf.getvalue()
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

@@ -48,15 +48,27 @@ def resolve(naskah_path, rel):
     return p if p.is_absolute() else Path(naskah_path).resolve().parent / p
 
 
-def tulis_prompt_klip(data, naskah_path, slug, w, h, start_images, offline):
+EXT_KLIP = (".mp4", ".mov", ".webm", ".mkv")
+
+
+def klip_otomatis(klip_dir, nomor):
+    """Cari klip adegan_<nomor>.(mp4|mov|webm|mkv) di folder klip; None bila tidak ada."""
+    for ext in EXT_KLIP:
+        p = Path(klip_dir) / f"adegan_{nomor}{ext}"
+        if p.exists():
+            return p
+    return None
+
+
+def tulis_prompt_klip(data, naskah_path, slug, w, h, start_images, offline, folder):
     """Tulis daftar prompt untuk generator video AI + (opsional) unduh gambar awal tiap adegan."""
-    folder = Path("klip") / slug
+    folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     style = data.get("gaya", DEFAULT_STYLE)
     gagal = []
     lines = [f"DAFTAR KLIP: {data.get('judul', slug)}",
              "Buat satu klip 5 detik, format vertikal 9:16, untuk tiap adegan. Simpan sebagai adegan_N.mp4 "
-             f"di folder {folder} lalu isi field \"video\" di naskah.", ""]
+             f"di folder {folder}. Klip yang ada di folder itu dipakai OTOMATIS saat video dirender.", ""]
     for i, sc in enumerate(data["adegan"], 1):
         est = max(2.0, len(sc["narasi"].split()) * 0.38) + 0.45
         gerak = sc.get("prompt_gerak") or sc.get("gambar_prompt", "")
@@ -90,6 +102,7 @@ def main(argv=None):
     ap.add_argument("--musik", help="file musik latar (mp3/wav) yang boleh dipakai komersial")
     ap.add_argument("--font", help="path file font .ttf untuk subtitle")
     ap.add_argument("--cache", default="cache", help="folder cache suara & gambar")
+    ap.add_argument("--klip-dir", help="folder klip (bawaan: klip/<judul> di sebelah buat_video.py)")
     ap.add_argument("--prompt-klip", action="store_true",
                     help="hanya tulis daftar prompt untuk generator video AI, lalu selesai")
     ap.add_argument("--gambar-awal", action="store_true",
@@ -104,9 +117,10 @@ def main(argv=None):
     out = Path(args.output) if args.output else Path("keluaran") / f"{slug}.mp4"
     work = Path(args.cache) / slug
     work.mkdir(parents=True, exist_ok=True)
+    klip_dir = Path(args.klip_dir) if args.klip_dir else Path(__file__).resolve().parent / "klip" / slug
 
     if args.prompt_klip:
-        daftar = tulis_prompt_klip(data, args.naskah, slug, w, h, args.gambar_awal, args.offline)
+        daftar = tulis_prompt_klip(data, args.naskah, slug, w, h, args.gambar_awal, args.offline, klip_dir)
         print(f"Daftar prompt klip: {daftar}")
         return 0
 
@@ -121,15 +135,21 @@ def main(argv=None):
 
     print("[2/3] Menyiapkan gambar/klip...")
     images, clips = [], []
+    n_klip = 0
     for i, sc in enumerate(scenes):
-        if sc.get("video"):
-            print(f"  klip {i + 1}/{len(scenes)}: {sc['video']}")
-            clips.append(resolve(args.naskah, sc["video"]))
+        klip = resolve(args.naskah, sc["video"]) if sc.get("video") else klip_otomatis(klip_dir, i + 1)
+        if klip:
+            print(f"  adegan {i + 1}/{len(scenes)}: KLIP VIDEO {klip.name}")
+            clips.append(klip)
             images.append(None)
+            n_klip += 1
         else:
-            print(f"  gambar {i + 1}/{len(scenes)}")
+            print(f"  adegan {i + 1}/{len(scenes)}: gambar diam + zoom (tidak ada klip adegan_{i + 1}.mp4)")
             clips.append(None)
             images.append(get_image(sc, i, style, w, h, work, base_dir, args.offline))
+    if n_klip == 0:
+        print("  CATATAN: belum ada klip video; semua adegan berupa gambar diam yang di-zoom.\n"
+              f"  Taruh klip di folder: {klip_dir}")
 
     print("[3/3] Merender video...")
     render_video(scenes, narrations, images, out, work, w, h, args.fps,

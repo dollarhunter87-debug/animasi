@@ -66,9 +66,9 @@ video AI online (tidak perlu GPU), lalu pipeline menggabungkannya dengan suara d
 2. Di situs/aplikasi generator video AI pilih mode **image-to-video**: unggah `adegan_N.jpg`, tempel prompt dari
    `daftar_prompt.txt`, pilih rasio 9:16 dan durasi sekitar 5 detik. Unduh hasilnya sebagai `adegan_N.mp4`
    ke folder yang sama. (Kuota gratis dan ketentuan tiap layanan berbeda; cek langsung di situsnya.)
-3. Di naskah, tambahkan ke tiap adegan: `"video": "..\\klip\\kenapa_langit_biru\\adegan_1.mp4"`
-   (path relatif terhadap folder file naskah). Adegan tanpa field `video` tetap memakai gambar + zoom,
-   jadi boleh dicampur.
+3. Tidak perlu mengedit naskah: klip bernama `adegan_N.mp4` di folder `klip\<judul>\` dipakai **otomatis**
+   (juga `.mov`, `.webm`, `.mkv`). Adegan yang klipnya belum ada tetap memakai gambar + zoom, jadi boleh dicampur.
+   Kalau perlu, field `"video": "path\\klip.mp4"` di naskah menimpa pencarian otomatis.
 4. Render seperti biasa: `py buat_video.py naskah\langit_biru.json`
 
 Klip yang lebih pendek dari narasi diperlambat (maks 2x) lalu frame terakhirnya ditahan; klip yang lebih
